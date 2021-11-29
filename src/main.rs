@@ -1,22 +1,39 @@
-extern crate sdl2;
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![allow(clippy::single_match)]
+
+extern crate glfw;
+
+use glfw::{Action, Context, Key};
+
+const WINDOW_TITLE: &str = "Hello Window";
+
+
 
 fn main() {
-    let sdl = sdl2::init().unwrap();
-    let video_subsytem = sdl.video().unwrap();
-    let window = video_subsytem
-        .window("vineda", 900, 700)
-        .resizable()
-        .build()
-        .unwrap();
+    let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+    // create a windoed mode window and its openGL context
+    let (mut window, events) = glfw.create_window(
+        300, 300, WINDOW_TITLE,
+        glfw::WindowMode::Windowed)
+        .expect("Failed to create GLFW window.");
 
-    let mut event_pump = sdl.event_pump().unwrap();
-    'main: loop {
-        for event in event_pump.poll_iter() {
+    // make the windows current context
+    window.make_current();
+    window.set_key_polling(true);
+
+    // loop
+    while !window.should_close() {
+        window.swap_buffers();
+
+        glfw.poll_events();
+        for (_, event) in glfw::flush_messages(&events) {
+            println!("{:?}", event);
             match event {
-                sdl2::event::Event::Quit{ .. } => break 'main,
-             _ => {}
+                glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
+                    window.set_should_close(true);
+                },
+                _ => {},
             }
         }
-        // do rendering here
     }
 }
