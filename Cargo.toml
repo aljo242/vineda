@@ -9,4 +9,4 @@ edition = "2021"
 cgmath = "0.16.1"
 gl = "0.14.0"
 glfw = {version = "0.39.1", features = ["vulkan"]}
-image = "0.19.0"
+image = "0.23.12"
